@@ -313,11 +313,11 @@ corn.acf.plot <- acf(na.omit(corn_ts))
 #GRAPES (TABLE/RAISIN)
 # average fields for each month for grapes
 grapes <- ETdat %>% # ET data
-  filter(crop == "Grapes (Table/Raisin") %>% # only use grape fields
+  filter(crop == "Grapes (Table/Raisin)") %>% #only use grape fields
   group_by(date) %>% # calculate over each date
   summarise(ET.in = mean(Ensemble.ET, na.rm = T)) # average fields
-# corn ET time series
-grapes_ts <- ts(corn$ET.in, # data
+# grapes ET time series
+grapes_ts <- ts(grapes$ET.in, # data
               start = c(2016,1), #start year 2016, month 1
               #first number is unit of time and second is observations within a unit
               frequency= 12) # frequency of observations in a unit
