@@ -170,61 +170,24 @@ ggplot() +
 
 #transform data
 ghg$co2_transform <- 1/(ghg$co2 + 1000)
-
 # multiple regression
 # creates a model object
 model.flux <- lm(co2_transform ~ airTemp +
                  log.age + mean.depth + surface.area + chlorophyll.a + log.DIP + 
-                 log.ch4 + runoff + log.precip + BorealV + TropicalV, 
+                 log.ch4 + runoff + log.precip, 
                data=ghg) #uses the data argument to specify dataframe
 summary(model.flux)
-#remove nas in new dataframe
-model.flux.clean <- na.omit(model.flux)
-
 #assumption testing
-res.flux <- rstandard(model.flux.clean)
-fit.flux <- fitted.values(model.flux.clean)
-
+res.flux <- rstandard(model.flux)
+fit.flux <- fitted.values(model.flux)
 #qq plot and qqline, normality of residuals
 qqnorm(res.flux, pch=19, col="grey50")
 qqline(res.flux)
 #shapiro-wilks test, normality
 shapiro.test(res.flux)
-
 #plot residuals
 plot(fit.flux,res.flux, pch=19, col="grey50")
 abline(h=0)
-
-# isolate continuous model variables into data frame:
-flux.data <- data.frame(ghg$airTemp, ghg$surface.area, ghg$chlorophyll.a,
-                       ghg$log.age,ghg$mean.depth,
-                       ghg$log.DIP, ghg$ch4, ghg$runoff,
-                       ghg$log.precip)
-
-
-# make a correlation matrix 
-chart.Correlation(flux.data, histogram=TRUE, pch=19)
-
-########## run stepwise
-flux.step <- ols_step_forward_aic(model.flux.clean)
-# view table
-flux.step 
-# check full model
-flux.step$model
-# plot AIC over time
-plot(flux.step)
-
-####### prediction with interval for predicting a point
-predict.lm(model.flux.clean, data.frame(airTemp=20,log.age=log(2),
-                                mean.depth=15,log.DIP=3,
-                                log.precip=6, BorealV=0),
-           interval="prediction")
-
-####### look at prediction with 95% confidence interval of the mean
-predict.lm(mod.full, data.frame(airTemp=20,log.age=log(2),
-                                mean.depth=15,log.DIP=3,
-                                log.precip=6, BorealV=0),
-           interval="confidence")
 
 #Question 2
 #Decompose the evapotranspiration time series for almonds, pistachios, fallow/idle fields, corn, and table grapes. 
